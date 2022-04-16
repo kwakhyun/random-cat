@@ -38,51 +38,56 @@
     ></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script type="text/babel">
-      const catItem = (
-        <li>
-          <img
-            src="https://cataas.com/cat/60b73094e04e18001194a309/says/react"
-            alt="고양이"
-          />
-        </li>
-      );
+      function Title(props) {
+        return <h1>{props.children}</h1>;
+      }
 
-      const title = <h1>첫번째 랜덤 고양이</h1>;
+      const Form = () => {
+        // arrow function
+        return (
+          <form>
+            <input
+              type="text"
+              name="name"
+              placeholder="영어 대사를 입력해주세요"
+            />
+            <button type="submit">생성</button>
+          </form>
+        );
+      };
 
-      const form = (
-        <form>
-          <input
-            type="text"
-            name="name"
-            placeholder="영어 대사를 입력해주세요"
-          />
-          <button type="submit">생성</button>
-        </form>
-      );
+      const MainCat = (props) => {
+        return (
+          <div class="main-cat">
+            <img src={props.img} alt="고양이" width="400" />
+            <button>🤍</button>
+          </div>
+        );
+      };
 
-      const mainCat = (
-        <div class="main-cat">
-          <img
-            src="https://cataas.com/cat/60b73094e04e18001194a309/says/react"
-            alt="고양이"
-            width="400"
-          />
-          <button>🤍</button>
-        </div>
-      );
-
-      const favorites = (
+      const Favorites = () => (
+        // 중괄호, return 생략
         <ul class="favorites">
-          {catItem} {catItem} {catItem}
+          <CatItem img="https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn" />
+          <CatItem img="https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript" />
         </ul>
       );
 
+      function CatItem({ img }) {
+        // ES6 Destructuring 객체 비구조화 할당
+        return (
+          <li>
+            <img src={img} />
+          </li>
+        );
+      }
+
       const app = (
         <div>
-          {title}
-          {form}
-          {mainCat}
-          {favorites}
+          <Title>Random Cat</Title>
+          <Form />
+          <MainCat img="https://cataas.com/cat/60b73094e04e18001194a309/says/react" />
+          <Favorites />
         </div>
       );
 
