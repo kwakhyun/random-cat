@@ -35,6 +35,15 @@
     ></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script type="text/babel">
+      const jsonLocalStorage = {
+        setItem: (key, value) => {
+          localStorage.setItem(key, JSON.stringify(value));
+        },
+        getItem: (key) => {
+          return JSON.parse(localStorage.getItem(key));
+        },
+      };
+
       function Title(props) {
         return <h1>{props.children}</h1>;
       }
@@ -111,24 +120,32 @@
         const CAT3 =
           "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
 
-        const [counter, setCounter] = React.useState(1);
+        const [counter, setCounter] = React.useState(
+          jsonLocalStorage.getItem("counter") || 0
+        );
         const [mainCat, setMainCat] = React.useState(CAT1);
-        const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
+        const [favorites, setFavorites] = React.useState(
+          jsonLocalStorage.getItem("favorites") || []
+        );
 
         function updateMainCat() {
           setMainCat(CAT2);
-          setCounter(counter + 1);
+          const nextCounter = counter + 1;
+          setCounter(nextCounter);
+          jsonLocalStorage.setItem("counter", nextCounter);
         }
 
-        function onLikeClick() {
-          setFavorites([...favorites, mainCat]);
+        function handleLikeClick() {
+          const nextFavorite = [...favorites, mainCat];
+          setFavorites(nextFavorite);
+          jsonLocalStorage.setItem("favorites", nextFavorite);
         }
 
         return (
           <div>
             <Title>{counter} Random Cat</Title>
             <Form updateMainCat={updateMainCat} />
-            <MainCat img={mainCat} onLikeClick={onLikeClick} />
+            <MainCat img={mainCat} onLikeClick={handleLikeClick} />
             <Favorites favorites={favorites} />
           </div>
         );
