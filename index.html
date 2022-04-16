@@ -52,33 +52,26 @@
         );
       };
 
-      const MainCat = (props) => {
-        function handleLikeClick() {
-          console.log("like");
-        }
-        function handleLikeMouseOver() {
-          console.log("like mouse over");
-        }
+      const MainCat = ({ img, handleLikeClick }) => {
         return (
           <div className="main-cat">
-            <img src={props.img} alt="고양이" width="400" />
-            <button onClick={handleLikeClick} onMouseOver={handleLikeMouseOver}>
-              🤍
-            </button>
+            <img src={img} alt="고양이" width="400" />
+            <button onClick={handleLikeClick}>🤍</button>
           </div>
         );
       };
 
-      const Favorites = () => (
-        // 중괄호, return 생략 가능
-        <ul className="favorites">
-          <CatItem img="https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn" />
-          <CatItem img="https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript" />
-        </ul>
-      );
+      const Favorites = ({ favorites }) => {
+        return (
+          <ul className="favorites">
+            {favorites.map((cat) => (
+              <CatItem key={cat} img={cat} />
+            ))}
+          </ul>
+        );
+      };
 
       function CatItem({ img }) {
-        // ES6 Destructuring 객체 비구조화 할당
         return (
           <li>
             <img src={img} style={{ width: "100px" }} />
@@ -96,18 +89,24 @@
 
         const [counter, setCounter] = React.useState(1);
         const [mainCat, setMainCat] = React.useState(CAT1);
+        const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
 
         function handleFormSubmit(event) {
           event.preventDefault();
           setCounter(counter + 1);
           setMainCat(CAT2);
         }
+
+        function handleLikeClick() {
+          setFavorites([...favorites, mainCat]);
+        }
+
         return (
           <div>
             <Title>{counter} Random Cat</Title>
             <Form handleFormSubmit={handleFormSubmit} />
-            <MainCat img={mainCat} />
-            <Favorites />
+            <MainCat img={mainCat} handleLikeClick={handleLikeClick} />
+            <Favorites favorites={favorites} />
           </div>
         );
       };
