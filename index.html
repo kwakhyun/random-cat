@@ -21,9 +21,6 @@
         flex-wrap: wrap;
         gap: 15px;
       }
-      .favorites img {
-        width: 150px;
-      }
     </style>
   </head>
   <body>
@@ -42,10 +39,9 @@
         return <h1>{props.children}</h1>;
       }
 
-      const Form = () => {
-        // arrow function
+      const Form = ({ handleFormSubmit }) => {
         return (
-          <form>
+          <form onSubmit={handleFormSubmit}>
             <input
               type="text"
               name="name"
@@ -57,17 +53,25 @@
       };
 
       const MainCat = (props) => {
+        function handleLikeClick() {
+          console.log("like");
+        }
+        function handleLikeMouseOver() {
+          console.log("like mouse over");
+        }
         return (
-          <div class="main-cat">
+          <div className="main-cat">
             <img src={props.img} alt="고양이" width="400" />
-            <button>🤍</button>
+            <button onClick={handleLikeClick} onMouseOver={handleLikeMouseOver}>
+              🤍
+            </button>
           </div>
         );
       };
 
       const Favorites = () => (
-        // 중괄호, return 생략
-        <ul class="favorites">
+        // 중괄호, return 생략 가능
+        <ul className="favorites">
           <CatItem img="https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn" />
           <CatItem img="https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript" />
         </ul>
@@ -77,23 +81,40 @@
         // ES6 Destructuring 객체 비구조화 할당
         return (
           <li>
-            <img src={img} />
+            <img src={img} style={{ width: "100px" }} />
           </li>
         );
       }
 
-      const app = (
-        <div>
-          <Title>Random Cat</Title>
-          <Form />
-          <MainCat img="https://cataas.com/cat/60b73094e04e18001194a309/says/react" />
-          <Favorites />
-        </div>
-      );
+      const App = () => {
+        const CAT1 =
+          "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
+        const CAT2 =
+          "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
+        const CAT3 =
+          "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
+
+        const [counter, setCounter] = React.useState(1);
+        const [mainCat, setMainCat] = React.useState(CAT1);
+
+        function handleFormSubmit(event) {
+          event.preventDefault();
+          setCounter(counter + 1);
+          setMainCat(CAT2);
+        }
+        return (
+          <div>
+            <Title>{counter} Random Cat</Title>
+            <Form handleFormSubmit={handleFormSubmit} />
+            <MainCat img={mainCat} />
+            <Favorites />
+          </div>
+        );
+      };
 
       const paint = document.querySelector("#paint");
 
-      ReactDOM.render(app, paint);
+      ReactDOM.render(<App />, paint);
     </script>
   </body>
 </html>
