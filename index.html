@@ -39,24 +39,48 @@
         return <h1>{props.children}</h1>;
       }
 
-      const Form = ({ handleFormSubmit }) => {
+      const Form = ({ updateMainCat }) => {
+        const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+        const [value, setValue] = React.useState("");
+        const [errorMessage, setErrorMessage] = React.useState("");
+
+        function handleInputChange(event) {
+          const inputValue = event.target.value;
+          setErrorMessage(
+            includesHangul(inputValue) ? "영어로 입력해주세요" : ""
+          );
+          setValue(inputValue.toUpperCase());
+        }
+
+        function handleFormSubmit(event) {
+          event.preventDefault();
+          setErrorMessage(value === "" ? "공백은 입력할 수 없습니다!" : "");
+          if (value !== "") {
+            updateMainCat(value);
+            setValue("");
+          }
+        }
+
         return (
           <form onSubmit={handleFormSubmit}>
             <input
               type="text"
               name="name"
-              placeholder="영어 대사를 입력해주세요"
+              placeholder="영어 문구를 입력해주세요"
+              value={value}
+              onChange={handleInputChange}
             />
             <button type="submit">생성</button>
+            <p style={{ color: "red" }}>{errorMessage}</p>
           </form>
         );
       };
 
-      const MainCat = ({ img, handleLikeClick }) => {
+      const MainCat = ({ img, onLikeClick }) => {
         return (
           <div className="main-cat">
             <img src={img} alt="고양이" width="400" />
-            <button onClick={handleLikeClick}>🤍</button>
+            <button onClick={onLikeClick}>🤍</button>
           </div>
         );
       };
@@ -91,21 +115,20 @@
         const [mainCat, setMainCat] = React.useState(CAT1);
         const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
 
-        function handleFormSubmit(event) {
-          event.preventDefault();
-          setCounter(counter + 1);
+        function updateMainCat() {
           setMainCat(CAT2);
+          setCounter(counter + 1);
         }
 
-        function handleLikeClick() {
+        function onLikeClick() {
           setFavorites([...favorites, mainCat]);
         }
 
         return (
           <div>
             <Title>{counter} Random Cat</Title>
-            <Form handleFormSubmit={handleFormSubmit} />
-            <MainCat img={mainCat} handleLikeClick={handleLikeClick} />
+            <Form updateMainCat={updateMainCat} />
+            <MainCat img={mainCat} onLikeClick={onLikeClick} />
             <Favorites favorites={favorites} />
           </div>
         );
