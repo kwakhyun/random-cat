@@ -44,6 +44,15 @@
         },
       };
 
+      const fetchCat = async (text) => {
+        const OPEN_API_DOMAIN = "https://cataas.com";
+        const response = await fetch(
+          `${OPEN_API_DOMAIN}/cat/says/${text}?json=true`
+        );
+        const responseJson = await response.json();
+        return `${OPEN_API_DOMAIN}/${responseJson.url}`;
+      };
+
       function Title(props) {
         return <h1>{props.children}</h1>;
       }
@@ -69,7 +78,6 @@
             setValue("");
           }
         }
-
         return (
           <form onSubmit={handleFormSubmit}>
             <input
@@ -85,16 +93,20 @@
         );
       };
 
-      const MainCat = ({ img, onLikeClick }) => {
+      const MainCat = ({ img, onLikeClick, savedCat }) => {
+        const likeIcon = savedCat ? "💝" : "🤍";
         return (
           <div className="main-cat">
             <img src={img} alt="고양이" width="400" />
-            <button onClick={onLikeClick}>🤍</button>
+            <button onClick={onLikeClick}>{likeIcon}</button>
           </div>
         );
       };
 
       const Favorites = ({ favorites }) => {
+        if (favorites.length === 0) {
+          return <b>하트를 눌러 고양이를 저장하세요!</b>;
+        }
         return (
           <ul className="favorites">
             {favorites.map((cat) => (
@@ -113,26 +125,37 @@
       }
 
       const App = () => {
-        const CAT1 =
-          "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
-        const CAT2 =
-          "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
-        const CAT3 =
-          "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
+        const lodingCat =
+          "https://img.extmovie.com/files/attach/images/148/526/573/065/042fab5cdb8f3c679579f40e5242c6fa.gif";
 
-        const [counter, setCounter] = React.useState(
-          jsonLocalStorage.getItem("counter") || 0
-        );
-        const [mainCat, setMainCat] = React.useState(CAT1);
-        const [favorites, setFavorites] = React.useState(
-          jsonLocalStorage.getItem("favorites") || []
-        );
+        const [mainCat, setMainCat] = React.useState(lodingCat);
 
-        function updateMainCat() {
-          setMainCat(CAT2);
-          const nextCounter = counter + 1;
-          setCounter(nextCounter);
-          jsonLocalStorage.setItem("counter", nextCounter);
+        const [counter, setCounter] = React.useState(() => {
+          return jsonLocalStorage.getItem("counter") || 0;
+        });
+        
+        const [favorites, setFavorites] = React.useState(() => {
+          return jsonLocalStorage.getItem("favorites") || [];
+        });
+
+        const savedCat = favorites.includes(mainCat);
+
+        const setInitialCat = async () => {
+          const cat = await fetchCat("Random Cat");
+          setMainCat(cat);
+        };
+
+        React.useEffect(() => {
+          setInitialCat();
+        }, []);
+
+        async function updateMainCat(value) {
+          const newCat = await fetchCat(value);
+          setMainCat(newCat);
+          setCounter((prev) => {
+            jsonLocalStorage.setItem("counter", prev + 1);
+            return prev + 1;
+          });
         }
 
         function handleLikeClick() {
@@ -141,11 +164,17 @@
           jsonLocalStorage.setItem("favorites", nextFavorite);
         }
 
+        const countCat = counter === 0 ? "" : `Number ${counter}🚩`;
+
         return (
           <div>
-            <Title>{counter} Random Cat</Title>
+            <Title>🎲Random Cat🐱 {countCat}</Title>
             <Form updateMainCat={updateMainCat} />
-            <MainCat img={mainCat} onLikeClick={handleLikeClick} />
+            <MainCat
+              img={mainCat}
+              onLikeClick={handleLikeClick}
+              savedCat={savedCat}
+            />
             <Favorites favorites={favorites} />
           </div>
         );
