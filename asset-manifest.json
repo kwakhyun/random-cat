@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/react-toy-random-cat/static/css/main.a855f2cb.css",
+    "main.js": "/react-toy-random-cat/static/js/main.91fc42a8.js",
+    "static/js/787.622ca421.chunk.js": "/react-toy-random-cat/static/js/787.622ca421.chunk.js",
+    "index.html": "/react-toy-random-cat/index.html",
+    "main.a855f2cb.css.map": "/react-toy-random-cat/static/css/main.a855f2cb.css.map",
+    "main.91fc42a8.js.map": "/react-toy-random-cat/static/js/main.91fc42a8.js.map",
+    "787.622ca421.chunk.js.map": "/react-toy-random-cat/static/js/787.622ca421.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a855f2cb.css",
+    "static/js/main.91fc42a8.js"
+  ]
+}
