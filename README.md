@@ -1,3 +1,3 @@
-# random-cat-images
+# random-cat
 
-<p>https://kwakhyun.github.io/random-cat-images/</p>
+<p>https://kwakhyun.github.io/random-cat/</p>
